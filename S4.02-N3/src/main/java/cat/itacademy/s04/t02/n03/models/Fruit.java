@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 public class Fruit {
     @Id
-    private String id; // mongo genere des ObjectId sous forme de string
+    private String id;
     private String name;
     private Integer quantityKg;
 }

@@ -13,22 +13,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@RestControllerAdvice  // RestControllerAdvice qd c'est une API Rest parce que ça inclut automatiquement @ResponseBody, Si MVC classique, préférer @ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(NoSuchElementException.class)  // to tell Spring this method should catch instances of NoSuchElementException.
+    @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Object> noSuchElementException(
             NoSuchElementException noSuchElementException,
             WebRequest request){
-        // ResponseEntity because it allows us to control both the body (the error message) and the HTTP status code
-        //1.Define the http status
-        HttpStatus status = HttpStatus.NOT_FOUND; // This translates to 404
-        // 2. Create a user-friendly error message
-        String errorMsg = "Requested fruit could not be found";
-        // 3. String path
-        String path = request.getDescription(false).replace("uri=", "");
 
-        // Optional: If you had a custom ErrorResponse object (recommended!)
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String errorMsg = "Requested fruit could not be found";
+        String path = request.getDescription(false).replace("uri=", "");
 
         ErrorResponse errorResponse = new ErrorResponse(
                 status,
@@ -55,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
-    protected ResponseEntity<Object> handleMethodArgumentNotValid( // ici c'est un Override d'une methode native. protected :  so that only subclasses could access it
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
                                                                    MethodArgumentNotValidException argumentNotValidException,
                                                                    HttpHeaders headers,
                                                                    HttpStatus status,

@@ -17,8 +17,8 @@ public class ErrorResponse {
     private int status;
     private String error;
     private String message;
-    private List<String> details; //pour les validations ou erreurs multiples
-    private String path; // To indicate the request path
+    private List<String> details;
+    private String path;
 
     public ErrorResponse(HttpStatus status, String message, List<String> details, String path){
         this.timestamp = LocalDateTime.now();

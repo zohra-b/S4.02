@@ -14,7 +14,7 @@ public class FruitService {
 
     private final FruitRepository fruitRepository;
 
-    @Autowired // injecter automatiquement une dépendance : si un seul constructeur, @autowired est facultatif
+    @Autowired
     public FruitService(FruitRepository fruitRepository) {
         this.fruitRepository = fruitRepository;
     }
@@ -29,7 +29,7 @@ public class FruitService {
 
     public Fruit findFruitById(Integer id) {
         return fruitRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fruit with id " + id + "not found"));
-    }       // le message de orElseThrow est un msg "interne" pour dev et debug , le msg dans handleNoSuchElementException est pour le "public")
+    }
 
     public Fruit updateFruit(Fruit fruit) {
         return fruitRepository.save(fruit);

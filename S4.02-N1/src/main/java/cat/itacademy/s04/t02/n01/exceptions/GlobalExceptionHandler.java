@@ -18,17 +18,11 @@ import org.springframework.http.HttpHeaders;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(NoSuchElementException.class)  // to tell Spring this method should catch instances of NoSuchElementException.
+  @ExceptionHandler(NoSuchElementException.class)
   public ResponseEntity<Object> noSuchElementException(NoSuchElementException noSuchElementException, WebRequest request){
-    // ResponseEntity because it allows us to control both the body (the error message) and the HTTP status code
-    //1.Define the http status
     HttpStatus status = HttpStatus.NOT_FOUND; // This translates to 404
-    // 2. Create a user-friendly error message
     String errorMsg = "Requested fruit could not be found";
-    // 3. String path
     String path = request.getDescription(false).replace("uri=", "");
-
-    // Optional: If you had a custom ErrorResponse object (recommended!)
 
     ErrorResponse errorResponse = new ErrorResponse(
             status,
@@ -38,7 +32,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponse, status);
   }
 
-  protected ResponseEntity<Object> handleMethodArgumentNotValid( // ici c'est un Override d'une methode native. protected :  so that only subclasses could access it
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(
                                                     MethodArgumentNotValidException argumentNotValidException,
                                                     HttpHeaders headers,
                                                     HttpStatus status,
@@ -76,19 +70,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponse, status);
   }
 
-//  @ExceptionHandler(HttpMessageNotReadableException.class)
-//  public ResponseEntity<Object> handleJsonParseError(HttpMessageNotReadableException ex, WebRequest request) {
-//    System.err.println("=== JSON PARSE ERROR ===");
-//    System.err.println("Message: " + ex.getMessage());
-//    System.err.println("Root cause: " + ex.getRootCause());
-//    ex.printStackTrace();
-//
-//    HttpStatus status = HttpStatus.BAD_REQUEST;
-//    String errorMsg = "Invalid JSON format: " + ex.getMessage();
-//    String path = request.getDescription(false).replace("uri=", "");
-//
-//    ErrorResponse errorResponse = new ErrorResponse(status, errorMsg, path);
-//    return new ResponseEntity<>(errorResponse, status);
-//  }
 
 }
