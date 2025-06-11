@@ -1,0 +1,33 @@
+== Info: Host localhost:8080 was resolved.
+== Info: IPv6: ::1
+== Info: IPv4: 127.0.0.1
+== Info:   Trying [::1]:8080...
+== Info: Connected to localhost (::1) port 8080
+=> Send header, 140 bytes (0x8c)
+0000: POST /fruits/add HTTP/1.1
+001b: Host: localhost:8080
+0031: User-Agent: curl/8.6.0
+0049: Accept: */*
+0056: Content-Type: application/json
+0076: Content-Length: 31
+008a: 
+=> Send data, 31 bytes (0x1f)
+0000: {"name":"poire","quantityKg":3}
+<= Recv header, 15 bytes (0xf)
+0000: HTTP/1.1 201 
+<= Recv header, 32 bytes (0x20)
+0000: Content-Type: application/json
+<= Recv header, 28 bytes (0x1c)
+0000: Transfer-Encoding: chunked
+<= Recv header, 37 bytes (0x25)
+0000: Date: Sun, 08 Jun 2025 13:05:05 GMT
+<= Recv header, 2 bytes (0x2)
+0000: 
+<= Recv data, 44 bytes (0x2c)
+0000: 26
+0004: {"id":8,"name":"poire","quantityKg":3}
+<= Recv data, 5 bytes (0x5)
+0000: 0
+0003: 
+== Info: Leftovers after chunking: 5 bytes
+== Info: Connection #0 to host localhost left intact
