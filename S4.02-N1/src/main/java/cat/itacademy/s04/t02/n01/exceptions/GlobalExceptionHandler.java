@@ -18,57 +18,60 @@ import org.springframework.http.HttpHeaders;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-  @ExceptionHandler(NoSuchElementException.class)
-  public ResponseEntity<Object> noSuchElementException(NoSuchElementException noSuchElementException, WebRequest request){
-    HttpStatus status = HttpStatus.NOT_FOUND; // This translates to 404
-    String errorMsg = "Requested fruit could not be found";
-    String path = request.getDescription(false).replace("uri=", "");
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<Object> noSuchElementException(NoSuchElementException noSuchElementException, WebRequest request) {
+        HttpStatus status = HttpStatus.NOT_FOUND; // This translates to 404
+        String errorMsg = "Requested fruit could not be found";
+        String path = request.getDescription(false).replace("uri=", "");
 
-    ErrorResponse errorResponse = new ErrorResponse(
-            status,
-            errorMsg,
-            path);
+        ErrorResponse errorResponse = new ErrorResponse(
+                status,
+                errorMsg,
+                path);
+        return new ResponseEntity<>(errorResponse, status);
+    }
 
-    return new ResponseEntity<>(errorResponse, status);
-  }
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(
+            MethodArgumentNotValidException argumentNotValidException,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        List<String> errors = argumentNotValidException.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(error -> error.getField() + " : " + error.getDefaultMessage())
+                .toList();
+        String path = request.getDescription(false).replace("uri=", "");
+        String errorMessage = "Validation failed for one or more fields";
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpStatus.BAD_REQUEST,
+                errorMessage,
+                errors,
+                path);
 
-  protected ResponseEntity<Object> handleMethodArgumentNotValid(
-                                                    MethodArgumentNotValidException argumentNotValidException,
-                                                    HttpHeaders headers,
-                                                    HttpStatus status,
-                                                    WebRequest request){
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String path = request.getDescription(false).replace("uri=", "");
+        ErrorResponse errorResponse = new ErrorResponse(status, ex.getMessage(), path);
+        return new ResponseEntity<>(errorResponse, status);
+    }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleOtherUncaughtExceptions(Exception exception, WebRequest request) {
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        String errorMsg = "An unexpected error occurred";
+        String path = request.getDescription(false).replace("uri=", "");
 
-    List<String> errors = argumentNotValidException.getBindingResult()
-            .getFieldErrors()
-            .stream()
-            .map(error -> error.getField() + " : " + error.getDefaultMessage())
-            .toList();
+        ErrorResponse errorResponse = new ErrorResponse(
+                status,
+                errorMsg,
+                path);
 
-    String path = request.getDescription(false).replace("uri=", "");
-    String errorMessage = "Validation failed for one or more fields";
-  ErrorResponse errorResponse = new ErrorResponse(
-          HttpStatus.BAD_REQUEST,
-          errorMessage,
-          errors,
-          path );
-
-    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
-  }
-
-  @ExceptionHandler(Exception.class)
-  public ResponseEntity<Object> handleOtherUncaughtExceptions(Exception exception, WebRequest request){
-      HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-      String errorMsg = "An unexpected error occurred";
-    String path = request.getDescription(false).replace("uri=", "");
-
-    ErrorResponse errorResponse = new ErrorResponse(
-            status,
-            errorMsg,
-            path );
-
-    return new ResponseEntity<>(errorResponse, status);
-  }
+        return new ResponseEntity<>(errorResponse, status);
+    }
 
 
 }

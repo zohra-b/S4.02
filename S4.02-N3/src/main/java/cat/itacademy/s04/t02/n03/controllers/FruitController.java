@@ -29,38 +29,25 @@ public class FruitController {
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity getOneFruitById(@PathVariable String id) {
-        if (fruitService.findFruitById(id) == null) {
-            return new ResponseEntity("The fruit with id " + id + "does not exist in database", HttpStatus.NOT_FOUND);
-        } else {
             return new ResponseEntity(fruitService.findFruitById(id), HttpStatus.OK);
-        }
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addNewFruit(@RequestBody  Fruit newFruit){
-        if (newFruit == null ){
-            return new ResponseEntity<>("New fruit is null", HttpStatus.NO_CONTENT);
-        } else {
-            fruitService.addFruit(newFruit);
-            return new ResponseEntity<>(newFruit, HttpStatus.OK);
-        }
+    public ResponseEntity<Fruit> addFruit(@RequestBody Fruit newFruit) {
+        fruitService.addFruit(newFruit);
+        return new ResponseEntity<>(newFruit, HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<?> updateFruit(
             @RequestBody Fruit fruitUpdate,
             @PathVariable String id){
-
         Fruit updatedFruit = fruitService.updateFruit(id, fruitUpdate);
         return ResponseEntity.ok("Fruit succesfully updated");
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteFruit(@PathVariable String id){
-        if(fruitService.findFruitById(id) == null){
-            return new ResponseEntity("The fruit with id " + id + " does not exist in database", HttpStatus.NOT_FOUND);
-        }
-
         fruitService.deleteFruitById(id);
         return new ResponseEntity<>("Fruit successfully deleted", HttpStatus.OK);
 

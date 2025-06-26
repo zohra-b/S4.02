@@ -24,61 +24,34 @@ public class FruitController {
 
     @GetMapping("/getAll")
     public ResponseEntity<?> getAllFruits(){
-        if (fruitService.findAllFruits().isEmpty()){
-            return new ResponseEntity<>("There is no fruit in your list", HttpStatus.OK);
-        } else return new ResponseEntity<>(fruitService.findAllFruits(), HttpStatus.OK);
+        List<Fruit> fruits = fruitService.findAllFruits();
+        if (fruits.isEmpty()) {
+            return ResponseEntity.ok("There is no fruit in your list");
+        }
+        return ResponseEntity.ok(fruitService.findAllFruits());
     }
-
 
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<Fruit> getFruitById(@PathVariable Integer id){
-        Fruit fruit = fruitService.findFruitById(id);
-        return ResponseEntity.ok(fruit);
+        return ResponseEntity.ok(fruitService.findFruitById(id));
     }
 
 
     @PostMapping("/add")
     public ResponseEntity<Fruit> addFruit(@RequestBody Fruit newFruit) {
-        System.out.println("Received fruit: " + newFruit);
-        if (newFruit != null) {
-            System.out.println("Name: " + newFruit.getName());
-            System.out.println("Quantity: " + newFruit.getQuantityKg());
-        } else {
-            System.out.println("newFruit is NULL!");
-        }
-
-        fruitService.addFruit(newFruit);
-        return new ResponseEntity<>(newFruit, HttpStatus.CREATED);
+        return new ResponseEntity<>(fruitService.addFruit(newFruit), HttpStatus.CREATED);
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateFruit(@PathVariable Integer id, @RequestBody Fruit updatedFruit){
-        try {
-            Fruit fruit = fruitService.findFruitById(id);
-            System.out.println("Received update for ID " + id + ": " + updatedFruit);
-            if (updatedFruit.getName() != null){
-                fruit.setName(updatedFruit.getName());
-            }
-            if (updatedFruit.getQuantityKg() != null){
-                fruit.setQuantityKg(updatedFruit.getQuantityKg());
-            }
-            fruitService.updateFruit(fruit);
-            return ResponseEntity.ok(fruit);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erreur : " + e.getMessage());
-        }
-    }
+    public ResponseEntity<Fruit> updateFruit(@PathVariable Integer id, @RequestBody Fruit updatedFruit){
+            return ResponseEntity.ok( fruitService.updateFruit(id, updatedFruit));
+      }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteFruit(@PathVariable Integer id){
-        if(fruitService.findFruitById(id) == null){
-            return new ResponseEntity("The fruit with id " + id + " does not exist in database", HttpStatus.NOT_FOUND);
-        }
-
+    public ResponseEntity<String> deleteFruit(@PathVariable Integer id){
         fruitService.deleteFruitById(id);
-        return new ResponseEntity<>("Fruit successfully deleted", HttpStatus.OK);
+        return ResponseEntity.ok("Fruit successfully deleted");
 
 
 

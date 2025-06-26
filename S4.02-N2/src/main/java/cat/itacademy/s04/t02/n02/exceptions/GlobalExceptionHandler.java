@@ -49,6 +49,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             return new ResponseEntity<>(errorResponse, status);
 
     }
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String path = request.getDescription(false).replace("uri=", "");
+        ErrorResponse errorResponse = new ErrorResponse(status, ex.getMessage(), path);
+        return new ResponseEntity<>(errorResponse, status);
+    }
+
 
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
                                                                    MethodArgumentNotValidException argumentNotValidException,

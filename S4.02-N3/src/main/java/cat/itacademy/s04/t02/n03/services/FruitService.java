@@ -34,15 +34,14 @@ public class FruitService {
     }
 
     public Fruit findFruitById(String id){
-        return fruitRepo.findById(id).orElseThrow(() -> new ResponseStatusException(
+        return fruitRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
                             HttpStatus.NOT_FOUND,
                             "Fruit with id " + id + " not found"));
     }
 
     public Fruit updateFruit(String id, Fruit fruitUpdate){
         Fruit existingFruit = findFruitById(id);
-
-
         if (fruitUpdate.getName() != null && !fruitUpdate.getName().equalsIgnoreCase(existingFruit.getName())){
             existingFruit.setName(fruitUpdate.getName());
         }
@@ -50,8 +49,6 @@ public class FruitService {
             existingFruit.setQuantityKg(fruitUpdate.getQuantityKg());
         }
         return fruitRepo.save(existingFruit);
-
-
     }
 
     public void deleteFruitById(String id){

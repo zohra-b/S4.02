@@ -33,10 +33,19 @@ private final FruitRepository fruitRepo;
     }
 
     public Fruit findFruitById(Integer id){
-        return fruitRepo.findById(id).orElseThrow(() -> new RuntimeException("Fruit with id " + id + " not found"));
+        return fruitRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Fruit with id " + id + " not found"));
     }
 
     public Fruit updateFruit(Fruit fruit){
+        Fruit existingFruit = findFruitById(fruit.getId());
+        System.out.println("Received update for Id " + fruit.getId() + ": " + fruit);
+        if (fruit.getName() != null){
+            existingFruit.setName(fruit.getName());
+        }
+        if (fruit.getQuantityKg() != null){
+            existingFruit.setQuantityKg(fruit.getQuantityKg());
+        }
         return fruitRepo.save(fruit);
 
     }
@@ -50,7 +59,6 @@ private final FruitRepository fruitRepo;
         if (fruit.getName() == null || fruit.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("Fruit name cannot be empty");
         }
-
         if (fruit.getQuantityKg() <= 0) {
             throw new IllegalArgumentException("Quantity must be at least 1");
         }

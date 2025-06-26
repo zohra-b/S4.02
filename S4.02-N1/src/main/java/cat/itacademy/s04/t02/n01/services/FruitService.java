@@ -19,26 +19,41 @@ public class FruitService {
         this.fruitRepository = fruitRepository;
     }
 
-    public Fruit addFruit(Fruit fruit) {
-        return fruitRepository.save(fruit);
+    public Fruit addFruit(Fruit newFruit) {
+        System.out.println("Received fruit: " + newFruit);
+        if (newFruit == null || newFruit.getName() == null || newFruit.getQuantityKg() == null) {
+            throw new IllegalArgumentException("Fruit name and quantity must not be null");
+        }
+        return fruitRepository.save(newFruit);
     }
+
 
     public List<Fruit> findAllFruits() {
         return fruitRepository.findAll();
     }
 
+
     public Fruit findFruitById(Integer id) {
-        return fruitRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Fruit with id " + id + "not found"));
+        return fruitRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Fruit with id " + id + "not found"));
     }
 
-    public Fruit updateFruit(Fruit fruit) {
-        return fruitRepository.save(fruit);
+    public Fruit updateFruit(Integer id, Fruit updatedFruit) {
+        Fruit existingFruit = findFruitById(id);
+        System.out.println("Received update for Id " + id + ": " + updatedFruit);
+        if (updatedFruit.getName() != null){
+            existingFruit.setName(updatedFruit.getName());
+        }
+        if (updatedFruit.getQuantityKg() != null){
+            existingFruit.setQuantityKg(updatedFruit.getQuantityKg());
+        }
+        return fruitRepository.save(existingFruit);
     }
 
-    public void deleteFruitById(Integer id) {
-        Fruit fruit = findFruitById(id);
-        fruitRepository.delete(fruit);
-    }
 
+public void deleteFruitById(Integer id) {
+    Fruit fruit = findFruitById(id);
+    fruitRepository.delete(fruit);
+}
 
 }
